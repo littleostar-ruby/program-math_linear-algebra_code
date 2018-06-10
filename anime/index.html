@@ -1,0 +1,504 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><title>《程序员的数学3:线性代数》通过动画看得到的线性代数</title>
+
+  
+
+  
+  
+  <style type="text/css">
+&#12288;<meta charset="UTF-8">
+<!--
+#li{
+#  width:88%;
+#  padding:0.5%;
+#  }
+p{
+  width:90%;
+  margin-left:3%;
+  }
+.code{
+  position:relative;
+  font-family:"Courier New",monospace;
+  font-size:75%;
+  background-color:#EEEEEE;
+  margin-left:6%;
+  padding:1%;
+  width:80%;
+  }
+.indent{
+  margin-left:7%;
+  }
+.date{
+  text-align:right;
+  }
+h2{
+  font-family:"Courier New",monospace;
+  font-size:120%;
+  background-color:#9F9FFF;
+  color:#000000;
+  padding:0.2em;
+  }
+h3{
+  font-family:"Courier New",monospace;
+  font-size:90%;
+  background-color:#FFFF99;
+  color:#000000;
+  padding:0.2em;
+  }
+h4{
+  font-family:"Courier New",monospace;
+  font-size:80%;
+  background-color:#FFFFFF;
+  color:#000000;
+  padding:0.2em;
+  }
+.no_margine_code{
+  position:relative;
+  font-family:"Courier New",monospace;
+  font-size:75%;
+  background-color:#EEEEEE;
+  margin-left:0%;
+  padding:1%;
+  width:95%;
+  }
+-->
+  </style></head><body>
+<h1>通过动画看得到的线性代数</h1>
+
+<hr>
+<h2>矩阵就是映射！</h2>
+
+<p>
+矩阵可不单单是数字排列成的表而已。比如
+m╳n 矩阵 A，它代表了 n 维空间到 m
+维空间的“映射”。为了观察这些映射（2维空间到2维空间的情况下）带来的变换，我们提供了动画演示程序，这里汇总了演示程序的使用方法。
+</p>
+
+<p>
+这里的提供的动画程序需要和《程序员的数学3:线性代数》一书配套使用。详细说明参见书中讲解。</p>
+
+<ul>
+
+  <li><a href="#01-01">动画程序的使用方法</a></li>
+  <li><a href="#02-01">试试看</a>
+    <ul>
+      <li><a href="#02-02">小试牛刀：观察对角矩阵</a></li>
+      <li><a href="#02-03">观察特征值、特征向量与对角化</a></li>
+      <li><a href="#02-04">观察秩与可逆性</a></li>
+    </ul>
+  </li>
+  <li><a href="#03-01">自由尝试自己想尝试的东西</a></li>
+  <li><a href="#04-01">基本工作原理</a></li>
+</ul>
+
+<a name="01-01"></a>
+<h2>动画程序的使用方法</h2>
+
+<ul>
+
+  <li> 配置好 <a href="https://www.ruby-lang.org/zh_cn/">Ruby</a> 和 <a href="http://www.gnuplot.info/">Gnuplot</a> 环境。</li>
+  <li> 把 <a href="../mat_anim.rb">mat_anim.rb</a> 保存在当前文件夹下。</li>
+  <li> 按照本书中的说明输入命令。例如
+    <pre class="no_margine_code">ruby mat_anim.rb | gnuplot<br></pre>
+  </li>
+  <li> 按 Enter 键可以重复执行命令。按 q 键结束。</li>
+  <li> 如果觉得演示过程太快或者太慢 ,可以通过以下参数进行调整 。
+    <pre class="no_margine_code">ruby mat_anim.rb -step=20 | gnuplot<br></pre>
+数字越大变化的速度越慢。</li>
+</ul>
+
+<table class="line130" bgcolor="#ccccff" cellpadding="5" width="550">
+
+  <tbody>
+    <tr>
+      <td>※如果因为使用本文件（页面）而造成直接或间接的损害，著者和出版社概不负责。用户需自行承担使用本服务所带来的风险。
+另外，本社不负责回答关于程序运行、环境配置等的一切问题。<br>
+※本页面中的 Flash 演示动画由<a href="http://madscientist.jp/%7Eikegami/ruby/ming/">
+Ming/Ruby </a>生成。
+实际的演示动画程序请使用<a href="../mat_anim.rb.html"> mat_anim.rb </a>自行生成。 </td>
+    </tr>
+  </tbody>
+</table>
+
+<a name="02-01"></a>
+<h2>试试看</h2>
+
+<p>
+对于指定的 2╳2 矩阵 A ，映射 y = A x 如下所示。
+原来的各点 x 在映射作用下变到了哪里呢？通过动画看一看吧。
+</p>
+
+<p>观察要点：</p>
+
+<ul>
+
+  <li> 原点保持不动</li>
+  <li> 直线变换之后还是直线</li>
+  <li> 平行线变换之后还是平行线</li>
+</ul>
+
+<a name="02-02"></a>
+<h3>小试牛刀 :观察对角矩阵</h3>
+
+<h4>■ 首先是典型的对角矩阵（本书第 xii 页）</h4>
+
+<table>
+
+  <tbody>
+    <tr>
+      <td rowspan="2"><i>A</i> = </td>
+      <td align="center">1.5</td>
+      <td align="center">0</td>
+    </tr>
+    <tr>
+      <td align="center">0</td>
+      <td align="center">0.5</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>命令：</p>
+
+<pre class="code">ruby mat_anim.rb -s=0 | gnuplot<br></pre>
+
+<embed src="mat_anime0.swf" type="application/x-shockwave-flash" width="500"><br>
+
+<p>观察要点：</p>
+
+<ul>
+
+  <li>水平和垂直方向上的伸缩。</li>
+  <li>水平方向上扩大（1.5倍），垂直方向上缩小（0.5倍）。</li>
+  <li>各小方格的面积变成了原来的 1.5 ╳ 0.5 ＝ 0.75 倍。这里的面积扩大率 0.75 就是 det A
+。因此，对角矩阵的行列式 ＝对角元素的乘积。</li>
+</ul>
+
+<h4>■ 如果对角元素中有 0 的话……（本书第 xiii 页）</h4>
+
+<table>
+
+  <tbody>
+    <tr>
+      <td rowspan="2"><i>B</i> = </td>
+      <td align="center">0</td>
+      <td align="center">0</td>
+    </tr>
+    <tr>
+      <td align="center">0</td>
+      <td align="center">0.5</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>命令：</p>
+
+<pre class="code">ruby mat_anim.rb -s=1 | gnuplot  <br></pre>
+
+<embed type="application/x-shockwave-flash" src="mat_anime1.swf" width="500"><br>
+
+<p>观察要点：</p>
+
+<ul>
+
+  <li>水平方向上变成原来的 0 倍 → 压缩扁平化。 </li>
+  <li>面积扩大率 det A = 0 </li>
+</ul>
+
+<h4>■ 如果对角元素中有负数的话……（本书第 xiv 页）</h4>
+
+<table>
+
+  <tbody>
+    <tr>
+      <td rowspan="2"><i>C</i> = </td>
+      <td align="center">1.5</td>
+      <td align="center">0</td>
+    </tr>
+    <tr>
+      <td align="center">0</td>
+      <td align="center">-0.5</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>命令：</p>
+
+<pre class="code">ruby mat_anim.rb -s=2 | gnuplot  <br></pre>
+
+<embed type="application/x-shockwave-flash" src="mat_anime2.swf" width="500"><br>
+
+<p>观察要：</p>
+
+<ul>
+
+  <li>垂直方向上变成原来的 -0.5 倍 → 上下颠倒</li>
+  <li>这时有 det A &lt; 0</li>
+</ul>
+
+<a name="02-03"></a>
+<h3>观察特征值、特征向量与对角化</h3>
+
+<h4>■ 非对角的一般矩阵的情况下，会发生倾斜（本书第 xv 页）</h4>
+
+<table>
+
+  <tbody>
+    <tr>
+      <td rowspan="2"><i>D</i> = </td>
+      <td align="center">1</td>
+      <td align="center">-0.3</td>
+    </tr>
+    <tr>
+      <td align="center">-0.7</td>
+      <td align="center">0.6</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>命令：</p>
+
+<pre class="code">ruby mat_anim.rb -s=3 | gnuplot  <br></pre>
+
+<embed type="application/x-shockwave-flash" src="mat_anime3.swf" width="500"><br>
+
+<p>观察要点：</p>
+
+<ul>
+
+  <li>倾斜。</li>
+  <li>并非“扭曲”,直线依然是直线，平行的依然保持平行。</li>
+  <li>A的第 1 列为 (1,0)^T 的像（目标点）、第 2 列为 (0,1)^T 的像（目标点）。 （^T 表示“转置”为列向量）。</li>
+  <li>只要知道了以上两点的像，就可以对整个空间的变化情况进行推断了。</li>
+</ul>
+
+<h4>■ 如果画出特征向量的话……（本书第 xvi 页）</h4>
+
+<table>
+
+  <tbody>
+    <tr>
+      <td rowspan="2"><i>D</i> = </td>
+      <td align="center">1</td>
+      <td align="center">-0.3</td>
+    </tr>
+    <tr>
+      <td align="center">-0.7</td>
+      <td align="center">0.6</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>命令：</p>
+
+<pre class="code">ruby mat_anim.rb -s=4 | gnuplot <br></pre>
+
+<embed type="application/x-shockwave-flash" src="mat_anime4.swf" width="500"><br>
+
+<p>观察要点：</p>
+
+<ul>
+
+  <li>有向线段只发生了伸缩，而方向没有变化，这便是特征向量。</li>
+  <li>伸缩率等于特征值。拉伸的那条对应的特征值是 1.3，收缩的那条对应的特征值是 0.3。</li>
+</ul>
+
+<h4>■ 如果按照特征向量的方向选取斜坐标系的话……（本书第 xvii 页）</h4>
+
+<table>
+
+  <tbody>
+    <tr>
+      <td rowspan="2"><i>D</i> = </td>
+      <td align="center">1</td>
+      <td align="center">-0.3</td>
+    </tr>
+    <tr>
+      <td align="center">-0.7</td>
+      <td align="center">0.6</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>命令：</p>
+
+<pre class="code">ruby mat_anim.rb -s=5 | gnuplot<br></pre>
+
+<embed type="application/x-shockwave-flash" src="mat_anime5.swf" width="500"><br>
+
+<p>观察要点：</p>
+
+<ul>
+
+  <li>只发生了沿着格子线的伸缩变换。</li>
+  <li>也就是说，像这样选取了“好”的坐标系的情况下，变换的行为就变得和对角矩阵时的情况一样。这便是对角化。</li>
+  <li>每个小方格的面积变成原来的 1.3 ╳ 0.3 ＝ 0.39 倍。所以，面积扩大率detA ＝ 0.39 ＝ 所有特征值的积。</li>
+</ul>
+
+<a name="02-04"></a>
+<h3>观察秩与可逆性</h3>
+
+<h4>■ 有些矩阵可能会把空间压缩成扁平状态（本书第 xviii 页）</h4>
+
+<table>
+
+  <tbody>
+    <tr>
+      <td rowspan="2"><i>E</i> = </td>
+      <td align="center">0.8</td>
+      <td align="center">-0.6</td>
+    </tr>
+    <tr>
+      <td align="center">0.4</td>
+      <td align="center">-0.3</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>命令：</p>
+
+<pre class="code">ruby mat_anim.rb -s=6 | gnuplot <br></pre>
+
+<embed type="application/x-shockwave-flash" src="mat_anime6.swf" width="500"><br>
+
+<p>观察要点：</p>
+
+<ul>
+
+  <li>目标空间中被压缩成了扁平状态(一条直线)，这条直线正是 A 的像（Im A）。</li>
+  <li>像（Im A）的维数称为秩。因为本例中是直线，所以秩是 1（rank A = 1）。</li>
+  <li>所谓压缩扁平化,也就是像的维数比原先降低了（rank A &gt; 2）。 这时 A 是奇异矩阵。如果没有发生压缩扁平化，则有
+rank A = 2 ，于是 A 是非奇异矩阵（可逆矩阵）。</li>
+  <li>因为发生了压缩扁平化，所以面积扩大率 det A = 0。</li>
+  <li> (1,0)^T 的目标点（A 的第 1 列）和 (0,1)^T 的目标点（A 的第 2 列）不再具有独立的方向。</li>
+</ul>
+
+<h4>■ 再画上特征向量的话……（本书第 xix 页）</h4>
+
+<table>
+
+  <tbody>
+    <tr>
+      <td rowspan="2"><i>E</i> = </td>
+      <td align="center">0.8</td>
+      <td align="center">-0.6</td>
+    </tr>
+    <tr>
+      <td align="center">0.4</td>
+      <td align="center">-0.3</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>命令：</p>
+
+<pre class="code">ruby mat_anim.rb -s=7 | gnuplot<br></pre>
+
+<embed type="application/x-shockwave-flash" src="mat_anime7.swf" width="500"><br>
+
+<p>观察要点：</p>
+
+<ul>
+
+  <li>图中的有向线段代表特征向量。在压缩扁平化的变换之下，特征值＝ 0。</li>
+</ul>
+
+<h4>■ 如果按照特征向量的方向选取斜坐标系……（本书第 xx 页）</h4>
+
+<table>
+
+  <tbody>
+    <tr>
+      <td rowspan="2"><i>E</i> = </td>
+      <td align="center">0.8</td>
+      <td align="center">-0.6</td>
+    </tr>
+    <tr>
+      <td align="center">0.4</td>
+      <td align="center">-0.3</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>命令：</p>
+
+<pre class="code">ruby mat_anim.rb -s=8 | gnuplot <br></pre>
+
+<embed type="application/x-shockwave-flash" src="mat_anime8.swf" width="500"><br>
+
+<p>观察要点：</p>
+
+<ul>
+
+  <li>特征值 0 对应的特征向量 v 所在的直线上的点全部都被变换到了原点上。这条直线是 A 的核（Ker A）。</li>
+  <li>与 v 平行的直线上的点全部都被“压缩”到了一点上。</li>
+  <li>也就是说，就算知道了目标点，也无法还原出特定的出发点。因此，逆矩阵不存在。</li>
+  <li>“原维数”（因为是平面，所以为 2 维）－ “被压缩掉的维数”（Ker A 是直线，所以 是 1 维）＝ “剩余的维数”（Im A
+也是直线，所以也是 1 维）。这就是维数定理。</li>
+</ul>
+
+<h4>■ 观察行列式的交替性（本书第 xxi 页）</h4>
+
+<table>
+
+  <tbody>
+    <tr>
+      <td rowspan="2"><i>F</i> = </td>
+      <td align="center">-0.3</td>
+      <td align="center">1</td>
+    </tr>
+    <tr>
+      <td align="center">0.6</td>
+      <td align="center">-0.7</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>命令：</p>
+
+<pre class="code">ruby mat_anim.rb -s=9 | gnuplot<br></pre>
+
+<embed type="application/x-shockwave-flash" src="mat_anime9.swf" width="500"><br>
+
+<p>观察要点：</p>
+
+<ul>
+
+  <li>空间上下翻转，这时的面积扩大率 det F &lt; 0</li>
+  <li>与（非对角的一般矩阵）A 对比一下就可以发现，图中的平行四边形格子虽然形状相同，但实际上发生了上下翻转。所以 <br>
+det A = - det F。<br>
+这正是行列式的交替性。</li>
+</ul>
+
+<a name="03-01"></a>
+<h2>自由尝试自己想尝试的东西</h2>
+
+<ul>
+
+  <li>自己定义矩阵
+    <pre class="no_margine_code"># 和 -s=3 的例子一样<br>ruby mat_anim.rb -a=1,-0.3,-0.7,0.6 | gnuplot<br>      </pre>
+  </li>
+  <li> 自己定义向量（有向线段）
+    <pre class="no_margine_code"># 和 -s=4 的例子一样<br>ruby mat_anim.rb -a=1,-0.3,-0.7,0.6 -arrow=0.3,0.7,0.5,-0.5 | gnuplot<br>      </pre>
+  </li>
+  <li>选取斜坐标系
+    <pre class="no_margine_code"># 和 -s=5 的例子一样<br>ruby mat_anim.rb -a=1,-0.3,-0.7,0.6 -xunit=0.3,0.7 -yunit=0.5,-0.5 -figure= | gnuplot<br>      </pre>
+  </li>
+</ul>
+
+<a name="04-01"></a>
+<h2>基本工作原理</h2>
+
+<p>首先用 ruby 生成标准的 gnuplot 命令，然后用管道把命令与 gnuplot&nbsp;
+连接起来画出图像。如果想详细了解其中的过程，可以通过以下命令进行查看。
+</p>
+
+<pre class="code">ruby mat_anim.rb -batch<br></pre>
+
+<!--
+&#19968;&#26086;&#12501;&#12449;&#12452;&#12523;&#12395;&#33853;&#12392;&#12379;&#12400;
+<pre  class="code">
+ruby mat_anim.rb > kuzu
+gnuplot kuzu
+</pre>
+-->
+</body></html>
